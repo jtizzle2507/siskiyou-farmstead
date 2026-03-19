@@ -1,0 +1,85 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-sans: 'Inter', sans-serif;
+  --font-serif: 'Gentium Book Plus', serif;
+  --color-sage: #5a7c65;
+  --color-sage-light: #6a8c75;
+  --color-sage-dark: #4a6b55;
+  --color-cream: #faf8f4;
+  --color-cream-light: #fdfcfa;
+  --color-warm-brown: #8b7355;
+  --color-warm-brown-dark: #5a4a2a;
+  --color-border: #e8e4dc;
+  --color-text: #555;
+  --color-heading: #2d2d2d;
+}
+
+* {
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+body {
+  font-family: var(--font-sans);
+  color: var(--color-text);
+  background-color: var(--color-cream);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-serif);
+  color: var(--color-heading);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #5a7c65 0%, #4a6b55 100%);
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(90, 124, 101, 0.4);
+  background: linear-gradient(135deg, #6a8c75 0%, #5a7c65 100%);
+}
+
+.product-card {
+  transition: all 0.3s ease;
+  border: 1px solid #e8e4dc;
+  background: #faf8f4;
+}
+
+.product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(139, 115, 85, 0.12);
+  border-color: #c9a96e;
+}
+
+.delivery-badge {
+  background: linear-gradient(135deg, #5a7c65 0%, #4a6b55 100%);
+}
+
+.nav-link {
+  font-family: 'Inter', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #555;
+  transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+  color: #5a7c65;
+}
+
+.section-heading {
+  font-family: 'Gentium Book Plus', serif;
+  color: #2d2d2d;
+}
+
+.font-serif {
+  font-family: 'Gentium Book Plus', serif;
+}
+
+.font-sans {
+  font-family: 'Inter', sans-serif;
+}
