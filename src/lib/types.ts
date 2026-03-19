@@ -69,6 +69,7 @@ export interface BlogPost {
   content: string;
   excerpt?: string | null;
   image_url?: string | null;
+  image_position?: { x: number; y: number } | null;
   published: boolean;
   published_at?: string | null;
   created_at?: string;

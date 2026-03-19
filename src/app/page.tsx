@@ -15,7 +15,7 @@ export default async function HomePage() {
   let infoCards: DeliveryInfoCard[] = DEFAULT_DELIVERY_INFO;
 
   try {
-    const { data } = await supabase.from('farm_products').select('*').order('created_at', { ascending: true });
+    const { data } = await supabase.from('farm_products').select('*').order('inventory', { ascending: false }).order('created_at', { ascending: true });
     if (data && data.length > 0) products = data;
   } catch { /* fallback to empty */ }
 

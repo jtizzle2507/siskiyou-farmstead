@@ -203,6 +203,7 @@ export async function POST(request: NextRequest) {
         const { data: res, error } = await supabase.from('farm_blog_posts').insert({
           title: data.title, slug: data.slug, content: data.content,
           excerpt: data.excerpt || null, image_url: data.image_url || null,
+          image_position: data.image_position || null,
           published: data.published || false,
           published_at: data.published ? new Date().toISOString() : null,
         }).select();

@@ -44,7 +44,11 @@ export default async function BlogPage() {
                 <Link key={post.id} href={`/blog/${post.slug}`} className="product-card rounded-xl overflow-hidden cursor-pointer block">
                   {post.image_url && (
                     <div className="w-full h-48 overflow-hidden relative">
-                      <Image src={post.image_url} alt={post.title} fill className="object-cover" sizes="(max-width: 768px) 100vw, 33vw" />
+                      <Image
+                        src={post.image_url} alt={post.title} fill className="object-cover"
+                        style={{ objectPosition: post.image_position ? `${(post.image_position as {x:number;y:number}).x}% ${(post.image_position as {x:number;y:number}).y}%` : '50% 50%' }}
+                        sizes="(max-width: 768px) 100vw, 33vw"
+                      />
                     </div>
                   )}
                   <div className="p-5">

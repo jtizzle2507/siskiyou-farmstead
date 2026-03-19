@@ -19,7 +19,10 @@ export default function HomePageClient({
   zones: Record<string, DeliveryZone>;
   infoCards: DeliveryInfoCard[];
 }) {
-  const featuredProducts = products.filter(p => p.active).slice(0, 3);
+  const featuredProducts = products
+    .filter(p => p.active)
+    .sort((a, b) => (b.inventory > 0 ? 1 : 0) - (a.inventory > 0 ? 1 : 0))
+    .slice(0, 3);
   const gridCols = GRID_COLS[Math.min(infoCards.length, 4)] || 'grid-cols-3';
 
   return (

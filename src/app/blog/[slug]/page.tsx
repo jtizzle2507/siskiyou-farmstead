@@ -66,7 +66,8 @@ export default async function BlogPostPage({ params }: Props) {
     url: `${SITE_URL}/blog/${post.slug}`,
   };
 
-  const paragraphs = post.content ? post.content.split('\n').filter((p: string) => p.trim()) : [];
+  const isHtml = post.content && post.content.includes('<');
+  const imagePos = post.image_position as { x: number; y: number } | null;
 
   return (
     <Providers>
@@ -89,15 +90,26 @@ export default async function BlogPostPage({ params }: Props) {
 
               {post.image_url && (
                 <div className="w-full rounded-xl overflow-hidden mb-10 relative" style={{ maxHeight: '500px', aspectRatio: '16/9' }}>
-                  <Image src={post.image_url} alt={post.title} fill className="object-cover" sizes="(max-width: 768px) 100vw, 768px" priority />
+                  <Image
+                    src={post.image_url} alt={post.title} fill className="object-cover"
+                    style={{ objectPosition: imagePos ? `${imagePos.x}% ${imagePos.y}%` : '50% 50%' }}
+                    sizes="(max-width: 768px) 100vw, 768px" priority
+                  />
                 </div>
               )}
 
-              <div className="prose prose-lg">
-                {paragraphs.map((paragraph: string, i: number) => (
-                  <p key={i} className="text-[#555] leading-relaxed mb-5 text-lg">{paragraph}</p>
-                ))}
-              </div>
+              {isHtml ? (
+                <div
+                  className="prose prose-lg prose-headings:font-serif prose-headings:text-[#2d2d2d] prose-p:text-[#555] prose-p:leading-relaxed prose-a:text-[#5a7c65] prose-a:underline prose-img:rounded-lg prose-img:mx-auto prose-blockquote:border-l-[#5a7c65] prose-blockquote:text-[#777] max-w-none"
+                  dangerouslySetInnerHTML={{ __html: post.content }}
+                />
+              ) : (
+                <div className="prose prose-lg">
+                  {post.content.split('\n').filter((p: string) => p.trim()).map((paragraph: string, i: number) => (
+                    <p key={i} className="text-[#555] leading-relaxed mb-5 text-lg">{paragraph}</p>
+                  ))}
+                </div>
+              )}
             </article>
           </div>
         </div>

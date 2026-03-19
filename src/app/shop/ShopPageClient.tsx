@@ -9,9 +9,10 @@ export default function ShopPageClient() {
   const { products } = useProducts();
   const [filter, setFilter] = useState('all');
 
-  const filteredProducts = filter === 'all'
+  const filteredProducts = (filter === 'all'
     ? products.filter(p => p.active)
-    : products.filter(p => p.active && p.category === filter);
+    : products.filter(p => p.active && p.category === filter)
+  ).sort((a, b) => (b.inventory > 0 ? 1 : 0) - (a.inventory > 0 ? 1 : 0));
 
   return (
     <div className="container mx-auto px-4 py-12">
