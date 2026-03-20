@@ -30,6 +30,11 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--color-heading);
 }
 
+h1.text-white, h2.text-white, h3.text-white,
+h4.text-white, h5.text-white, h6.text-white {
+  color: #fff;
+}
+
 .btn-primary {
   background: linear-gradient(135deg, #5a7c65 0%, #4a6b55 100%);
   transition: all 0.3s ease;
