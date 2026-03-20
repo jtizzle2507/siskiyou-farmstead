@@ -9,8 +9,11 @@ export default function AdminSubscribersPage() {
   const [subscribers, setSubscribers] = useState<Subscriber[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
+  const [showBulk, setShowBulk] = useState(false);
   const [newEmail, setNewEmail] = useState('');
+  const [bulkEmails, setBulkEmails] = useState('');
   const [adding, setAdding] = useState(false);
+  const [bulkStatus, setBulkStatus] = useState<{ added: number; skipped: number; invalid: number } | null>(null);
 
   useEffect(() => { fetchSubscribers(); }, []);
 
@@ -49,6 +52,45 @@ export default function AdminSubscribersPage() {
     }
   };
 
+  const handleBulkAdd = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const lines = bulkEmails.split(/[\n,;]+/).map(l => l.trim().toLowerCase()).filter(Boolean);
+    const unique = [...new Set(lines)];
+    const existing = new Set(subscribers.map(s => s.email.toLowerCase()));
+
+    const valid: string[] = [];
+    let skipped = 0;
+    let invalid = 0;
+
+    for (const email of unique) {
+      if (!emailRegex.test(email)) { invalid++; continue; }
+      if (existing.has(email)) { skipped++; continue; }
+      valid.push(email);
+    }
+
+    if (valid.length === 0) {
+      setBulkStatus({ added: 0, skipped, invalid });
+      return;
+    }
+
+    setAdding(true);
+    let added = 0;
+    for (const email of valid) {
+      try {
+        const result = await adminApi('addSubscriber', { email });
+        const newSub = Array.isArray(result.data) ? result.data[0] : result.data;
+        setSubscribers(prev => [newSub, ...prev]);
+        added++;
+      } catch {
+        skipped++;
+      }
+    }
+    setAdding(false);
+    setBulkStatus({ added, skipped, invalid });
+    setBulkEmails('');
+  };
+
   const handleToggle = async (id: string) => {
     try {
       const sub = subscribers.find(s => s.id === id);
@@ -80,12 +122,20 @@ export default function AdminSubscribersPage() {
           <h2 className="text-2xl font-bold">Newsletter Subscribers</h2>
           <p className="text-sm text-gray-600 mt-1">{subscribers.length} total &middot; {activeCount} active</p>
         </div>
-        <button
-          onClick={() => setShowForm(!showForm)}
-          className="btn-primary text-white px-4 py-2 rounded-lg"
-        >
-          {showForm ? 'Cancel' : '+ Add Email'}
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={() => { setShowBulk(!showBulk); setShowForm(false); setBulkStatus(null); }}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${showBulk ? 'bg-gray-200 text-gray-700' : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'}`}
+          >
+            {showBulk ? 'Cancel' : 'Bulk Import'}
+          </button>
+          <button
+            onClick={() => { setShowForm(!showForm); setShowBulk(false); setBulkStatus(null); }}
+            className="btn-primary text-white px-4 py-2 rounded-lg"
+          >
+            {showForm ? 'Cancel' : '+ Add Email'}
+          </button>
+        </div>
       </div>
 
       {showForm && (
@@ -107,6 +157,39 @@ export default function AdminSubscribersPage() {
             >
               {adding ? 'Adding...' : 'Add'}
             </button>
+          </form>
+        </div>
+      )}
+
+      {showBulk && (
+        <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
+          <h3 className="text-xl font-bold mb-2">Bulk Import</h3>
+          <p className="text-sm text-gray-500 mb-4">Paste emails below — one per line, or separated by commas.</p>
+          <form onSubmit={handleBulkAdd} className="space-y-3">
+            <textarea
+              value={bulkEmails}
+              onChange={(e) => { setBulkEmails(e.target.value); setBulkStatus(null); }}
+              rows={8}
+              placeholder={"john@example.com\njane@example.com\nfarm-lover@email.com"}
+              className="w-full border rounded px-3 py-2 resize-vertical font-mono text-sm"
+              required
+            />
+            <div className="flex items-center gap-4">
+              <button
+                type="submit"
+                disabled={adding}
+                className="btn-primary text-white px-6 py-2 rounded-lg"
+              >
+                {adding ? 'Importing...' : 'Import All'}
+              </button>
+              {bulkStatus && (
+                <p className="text-sm text-gray-600">
+                  <span className="text-green-700 font-medium">{bulkStatus.added} added</span>
+                  {bulkStatus.skipped > 0 && <span> &middot; {bulkStatus.skipped} skipped (duplicate)</span>}
+                  {bulkStatus.invalid > 0 && <span> &middot; <span className="text-red-600">{bulkStatus.invalid} invalid</span></span>}
+                </p>
+              )}
+            </div>
           </form>
         </div>
       )}
