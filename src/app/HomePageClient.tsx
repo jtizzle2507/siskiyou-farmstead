@@ -63,7 +63,7 @@ export default function HomePageClient({
       {/* Delivery Info */}
       <div className="bg-[#faf8f4] py-16">
         <div className="container mx-auto px-4">
-          <h2 className="section-heading text-3xl font-bold text-center mb-10">Delivery Schedule</h2>
+          <h2 className="section-heading text-3xl font-bold text-center mb-10">Pickup Schedule</h2>
           <div className={`grid md:${gridCols} gap-6 max-w-4xl mx-auto`}>
             {infoCards.map(card => (
               <div key={card.id} className="text-center p-6 bg-[#fdfcfa] rounded-xl" style={{ border: '1px solid #d4e0d8' }}>

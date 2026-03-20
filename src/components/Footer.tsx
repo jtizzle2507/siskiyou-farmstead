@@ -34,7 +34,6 @@ export default function Footer() {
             <h4 className="text-sm font-semibold uppercase tracking-wider text-[#5a7c65] mb-4 font-sans">Contact</h4>
             <div className="space-y-2 text-sm text-[#777]">
               <p>Siskiyou County, California</p>
-              <p>Delivery throughout the county</p>
               <p>Sunday pickup in Yreka</p>
             </div>
           </div>
