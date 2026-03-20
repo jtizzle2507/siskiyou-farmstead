@@ -177,6 +177,13 @@ export async function POST(request: NextRequest) {
         result = res;
         break;
       }
+      case 'addSubscriber': {
+        const { data: res, error } = await supabase.from('farm_subscribers')
+          .upsert({ email: data.email, active: true }).select();
+        if (error) throw error;
+        result = res;
+        break;
+      }
       case 'deleteSubscriber': {
         const { error } = await supabase.from('farm_subscribers').delete().eq('id', data.id);
         if (error) throw error;

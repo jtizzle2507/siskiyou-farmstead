@@ -8,6 +8,9 @@ import type { Subscriber } from '@/lib/types';
 export default function AdminSubscribersPage() {
   const [subscribers, setSubscribers] = useState<Subscriber[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showForm, setShowForm] = useState(false);
+  const [newEmail, setNewEmail] = useState('');
+  const [adding, setAdding] = useState(false);
 
   useEffect(() => { fetchSubscribers(); }, []);
 
@@ -19,6 +22,30 @@ export default function AdminSubscribersPage() {
       console.error('Failed to fetch subscribers:', err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleAdd = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const email = newEmail.trim().toLowerCase();
+    if (!email) return;
+
+    if (subscribers.some(s => s.email.toLowerCase() === email)) {
+      alert('This email is already subscribed.');
+      return;
+    }
+
+    setAdding(true);
+    try {
+      const result = await adminApi('addSubscriber', { email });
+      const newSub = Array.isArray(result.data) ? result.data[0] : result.data;
+      setSubscribers(prev => [newSub, ...prev]);
+      setNewEmail('');
+      setShowForm(false);
+    } catch (err) {
+      alert('Failed to add subscriber: ' + (err instanceof Error ? err.message : 'Unknown error'));
+    } finally {
+      setAdding(false);
     }
   };
 
@@ -53,7 +80,36 @@ export default function AdminSubscribersPage() {
           <h2 className="text-2xl font-bold">Newsletter Subscribers</h2>
           <p className="text-sm text-gray-600 mt-1">{subscribers.length} total &middot; {activeCount} active</p>
         </div>
+        <button
+          onClick={() => setShowForm(!showForm)}
+          className="btn-primary text-white px-4 py-2 rounded-lg"
+        >
+          {showForm ? 'Cancel' : '+ Add Email'}
+        </button>
       </div>
+
+      {showForm && (
+        <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
+          <h3 className="text-xl font-bold mb-4">Add Subscriber</h3>
+          <form onSubmit={handleAdd} className="flex gap-3">
+            <input
+              type="email"
+              value={newEmail}
+              onChange={(e) => setNewEmail(e.target.value)}
+              placeholder="email@example.com"
+              className="flex-1 border rounded px-3 py-2"
+              required
+            />
+            <button
+              type="submit"
+              disabled={adding}
+              className="btn-primary text-white px-6 py-2 rounded-lg whitespace-nowrap"
+            >
+              {adding ? 'Adding...' : 'Add'}
+            </button>
+          </form>
+        </div>
+      )}
 
       <div className="bg-white rounded-lg shadow-sm overflow-hidden">
         <table className="w-full">
