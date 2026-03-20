@@ -42,6 +42,7 @@ export default function AdminBlogPage() {
   const [uploading, setUploading] = useState(false);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [imagePosition, setImagePosition] = useState<{ x: number; y: number }>({ x: 50, y: 50 });
+  const [editHtml, setEditHtml] = useState(false);
   const [repositioningPostId, setRepositioningPostId] = useState<string | null>(null);
   const [reposPosition, setReposPosition] = useState<{ x: number; y: number }>({ x: 50, y: 50 });
   const [formData, setFormData] = useState({
@@ -138,6 +139,7 @@ export default function AdminBlogPage() {
     setFormData({ title: '', slug: '', excerpt: '', content: '', image_url: '', published: false });
     setImagePreview(null);
     setImagePosition({ x: 50, y: 50 });
+    setEditHtml(false);
     setShowForm(false);
     setEditingPost(null);
   };
@@ -205,15 +207,40 @@ export default function AdminBlogPage() {
                 className="w-full border rounded px-3 py-2" placeholder="Short description for the blog listing" />
             </div>
 
-            {/* Rich Text Editor */}
+            {/* Content Editor */}
             <div>
-              <label className="block text-sm font-medium mb-1">Content</label>
-              <RichTextEditor
-                content={formData.content}
-                onChange={(html) => setFormData(prev => ({ ...prev, content: html }))}
-                onImageUpload={handleInlineImageUpload}
-                placeholder="Write your blog post content here..."
-              />
+              <div className="flex items-center justify-between mb-1">
+                <label className="block text-sm font-medium">Content</label>
+                <button
+                  type="button"
+                  onClick={() => setEditHtml(!editHtml)}
+                  className={`text-xs px-3 py-1 rounded border transition-colors ${
+                    editHtml
+                      ? 'bg-gray-800 text-white border-gray-800'
+                      : 'bg-white text-gray-600 border-gray-300 hover:bg-gray-50'
+                  }`}
+                >
+                  {editHtml ? '</> HTML' : '</> Edit HTML'}
+                </button>
+              </div>
+              {editHtml ? (
+                <textarea
+                  value={formData.content}
+                  onChange={(e) => setFormData(prev => ({ ...prev, content: e.target.value }))}
+                  rows={20}
+                  className="w-full border rounded px-3 py-2 resize-vertical font-mono text-sm bg-gray-50"
+                  placeholder="<p>Write raw HTML here...</p>"
+                  spellCheck={false}
+                />
+              ) : (
+                <RichTextEditor
+                  key={editHtml ? 'html' : 'rich'}
+                  content={formData.content}
+                  onChange={(html) => setFormData(prev => ({ ...prev, content: html }))}
+                  onImageUpload={handleInlineImageUpload}
+                  placeholder="Write your blog post content here..."
+                />
+              )}
             </div>
 
             {/* Featured Image with Position Picker */}
