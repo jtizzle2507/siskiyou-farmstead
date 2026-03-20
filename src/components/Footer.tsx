@@ -8,7 +8,7 @@ export default function Footer() {
           <div>
             <h3 className="text-xl font-bold mb-3 text-[#2d2d2d] font-serif">Siskiyou Farmstead</h3>
             <p className="text-[#777] text-sm leading-relaxed">
-              Your local source for fresh, sustainably grown greens and gourmet mushrooms in beautiful Siskiyou County. Farm-fresh, delivered to your door.
+              Your local source for fresh, sustainably grown greens and gourmet mushrooms in beautiful Siskiyou County.
             </p>
           </div>
           <div>
