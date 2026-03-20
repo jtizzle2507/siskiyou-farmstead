@@ -74,7 +74,7 @@ export default function HomePageClient({
             ))}
           </div>
           <div className="mt-10 max-w-2xl mx-auto bg-[#fdfcfa] p-6 rounded-xl" style={{ border: '1px solid #e8e4dc' }}>
-            <h3 className="font-bold text-lg mb-4 text-center text-[#2d2d2d] font-serif">Weekly Delivery Days</h3>
+            <h3 className="font-bold text-lg mb-4 text-center text-[#2d2d2d] font-serif">Weekly Pickup Days</h3>
             <div className="space-y-2 text-sm">
               {Object.entries(zones).map(([key, zone]) => (
                 <div key={key} className="flex justify-between py-1">
